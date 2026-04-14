@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <nav>
+        <div class="container nav-content">
+            <a href="/" class="brand">CampusLost</a>
+            <div class="nav-links">
+                <a href="/items">Browse</a>
+                <a href="/items/report" class="active">Report Item</a>
+                <% if (user) { %>
+                    <% if (user.isAdmin) { %>
+                        <a href="/admin/dashboard">Dashboard</a>
+                    <% } %>
+                    <a href="/<%= user.username %>/items">My Items</a>
+                    <a href="/<%= user.username %>/claims">My Claims</a>
+                    <a href="/logout">Logout</a>
+                <% } else { %>
+                    <a href="/login" class="btn btn-outline">Login</a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="form-container" style="max-width: 800px;">
+            <h1 style="margin-bottom: 2rem;">Report an Item</h1>
+            
+            <form action="/items/report" method="POST" enctype="multipart/form-data">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div>
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" name="title" required placeholder="e.g., iPhone 13 Blue">
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select name="category" required>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Wallets/Bags">Wallets/Bags</option>
+                                <option value="Keys">Keys</option>
+                                <option value="Documents">Documents</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" name="location" required placeholder="e.g., Library 2nd Floor">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label>Item Type</label>
+                            <select name="itemType" required>
+                                <option value="found">I Found Something</option>
+                                <option value="lost">I Lost Something</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Item Image (Mandatory)</label>
+                            <input type="file" name="image" accept="image/*" required>
+                            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.5rem;">Please provide a clear photo of the item.</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea name="description" rows="4" required placeholder="Provide details like color, brand, condition..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Submit Report</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

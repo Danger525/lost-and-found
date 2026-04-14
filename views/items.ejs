@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <nav>
+        <div class="container nav-content">
+            <a href="/" class="brand">CampusLost</a>
+            <div class="nav-links">
+                <a href="/items" class="active">Browse</a>
+                <a href="/items/report">Report Item</a>
+                <% if (user) { %>
+                    <% if (user.isAdmin) { %>
+                        <a href="/admin/dashboard">Dashboard</a>
+                    <% } %>
+                    <a href="/<%= user.username %>/items">My Items</a>
+                    <a href="/<%= user.username %>/claims">My Claims</a>
+                    <a href="/logout">Logout</a>
+                <% } else { %>
+                    <a href="/login" class="btn btn-outline">Login</a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section style="margin-top: 4rem;">
+            <h1>Recent Listings</h1>
+            
+            <form action="/items" method="GET" style="display: flex; gap: 1rem; margin-top: 2rem; background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                <input type="text" name="q" placeholder="Search for items..." value="<%= filters.q || '' %>" style="flex: 2; padding: 0.75rem 1rem; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                <select name="category" style="flex: 1; padding: 0.75rem 1rem; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                    <option value="">All Categories</option>
+                    <option value="Electronics" <%= filters.category === 'Electronics' ? 'selected' : '' %>>Electronics</option>
+                    <option value="Wallets/Bags" <%= filters.category === 'Wallets/Bags' ? 'selected' : '' %>>Wallets/Bags</option>
+                    <option value="Keys" <%= filters.category === 'Keys' ? 'selected' : '' %>>Keys</option>
+                    <option value="Documents" <%= filters.category === 'Documents' ? 'selected' : '' %>>Documents</option>
+                    <option value="Others" <%= filters.category === 'Others' ? 'selected' : '' %>>Others</option>
+                </select>
+                <select name="type" style="flex: 1; padding: 0.75rem 1rem; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                    <option value="">All Types</option>
+                    <option value="lost" <%= filters.type === 'lost' ? 'selected' : '' %>>Lost</option>
+                    <option value="found" <%= filters.type === 'found' ? 'selected' : '' %>>Found</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
+
+            <div class="grid">
+                <% if (items.length > 0) { %>
+                    <% items.forEach(item => { %>
+                        <div class="card">
+                            <img src="<%= item.imageUrl || 'https://images.unsplash.com/photo-1549490349-8643362247b5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60' %>" alt="<%= item.title %>" class="card-image">
+                            <div class="card-content">
+                                <span class="card-tag card-tag-<%= item.itemType %>"><%= item.itemType %></span>
+                                <h3><%= item.title %></h3>
+                                <p style="margin-bottom: 0.5rem; color: #6366f1; font-weight: 600;"><%= item.location %></p>
+                                <p><%= item.description.substring(0, 100) %><%= item.description.length > 100 ? '...' : '' %></p>
+                                <a href="/items/<%= item._id %>" class="btn btn-outline" style="width: 100%; margin-top: 1.5rem; text-align: center;">View Details</a>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; color: #94a3b8;">
+                        <h2>No items found matching your criteria.</h2>
+                    </div>
+                <% } %>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

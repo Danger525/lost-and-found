@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <nav>
+        <div class="container nav-content">
+            <a href="/" class="brand">CampusLost</a>
+            <div class="nav-links">
+                <a href="/items">Browse</a>
+                <a href="/items/report">Report Item</a>
+                <% if (user) { %>
+                    <% if (user.isAdmin) { %>
+                        <a href="/admin/dashboard">Dashboard</a>
+                    <% } %>
+                    <a href="/<%= user.username %>/items">My Items</a>
+                    <a href="/<%= user.username %>/claims">My Claims</a>
+                    <a href="/logout">Logout</a>
+                <% } else { %>
+                    <a href="/login" class="btn btn-outline">Login</a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 4rem;">
+        <a href="/items" style="color: #94a3b8; text-decoration: none; margin-bottom: 2rem; display: inline-block;">← Back to listings</a>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start;">
+            <div class="card" style="height: auto;">
+                <img src="<%= item.imageUrl || 'https://images.unsplash.com/photo-1549490349-8643362247b5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60' %>" alt="<%= item.title %>" style="width: 100%; height: 400px; object-fit: cover;">
+            </div>
+            
+            <div>
+                <span class="card-tag card-tag-<%= item.itemType %>"><%= item.itemType %></span>
+                <h1 style="font-size: 3rem; margin: 0.5rem 0 1.5rem;"><%= item.title %></h1>
+                
+                <div style="background: rgba(255,255,255,0.03); padding: 2rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 2rem;">
+                    <p style="color: #f8fafc; font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;"><%= item.description %></p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <p style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; font-weight: 700;">Location</p>
+                            <p style="font-weight: 600;"><%= item.location %></p>
+                        </div>
+                        <div>
+                            <p style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; font-weight: 700;">Category</p>
+                            <p style="font-weight: 600;"><%= item.category %></p>
+                        </div>
+                        <div>
+                            <p style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; font-weight: 700;">Date Reported</p>
+                            <p style="font-weight: 600;"><%= item.date.toDateString() %></p>
+                        </div>
+                        <div>
+                            <p style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; font-weight: 700;">Reported By</p>
+                            <p style="font-weight: 600;"><%= item.reporter.username %></p>
+                        </div>
+                    </div>
+                </div>
+
+                <% if (success_msg.length > 0) { %>
+                    <div style="background: rgba(99, 102, 241, 0.2); color: #6366f1; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid rgba(99, 102, 241, 0.3);">
+                        <%= success_msg %>
+                    </div>
+                <% } %>
+
+                <% if (user && user.id !== item.reporter._id.toString()) { %>
+                    <div style="background: rgba(255,255,255,0.03); padding: 2.5rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05);">
+                        <h2 style="margin-bottom: 1.5rem;">Claim this item</h2>
+                        <form action="/items/<%= item._id %>/claim" method="POST">
+                            <div class="form-group">
+                                <label>Proof of Ownership / Description</label>
+                                <textarea name="description" rows="3" required placeholder="Describe specific details only the owner would know..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Your Contact Details</label>
+                                <input type="text" name="contactDetails" required placeholder="Phone number or alternative email">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Claim</button>
+                        </form>
+                    </div>
+                <% } else if (user && user.id === item.reporter._id.toString()) { %>
+                    <div style="background: rgba(99, 102, 241, 0.1); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(99, 102, 241, 0.2); text-align: center;">
+                        <p style="color: #6366f1; font-weight: 600;">You reported this item.</p>
+                        <a href="/admin" class="btn btn-outline" style="margin-top: 1rem;">Manage Claims</a>
+                    </div>
+                <% } else { %>
+                    <div style="text-align: center;">
+                        <a href="/login" class="btn btn-primary" style="width: 100%;">Login to Claim this Item</a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
