@@ -50,13 +50,10 @@ app.get('/', (req, res) => {
     res.render('index', { title: 'Home | Campus Lost & Found' });
 });
 
-// Export for Vercel
-module.exports = app;
+// Start Server (Required for Render)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+});
 
-// Start Server locally
-if (process.env.NODE_ENV !== 'production') {
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-        console.log(`🚀 Server running on http://localhost:${PORT}`);
-    });
-}
+module.exports = app;
